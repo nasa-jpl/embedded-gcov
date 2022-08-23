@@ -7,6 +7,7 @@
  * @author 2021-08-31 kjpeters  Working and cleaned up version.
  * @author 2021-09-20 kjpeters  Use preprocessor macros to hide printf.
  * @author 2022-01-03 kjpeters  Add file output.
+ * @author 2022-07-31 kjpeters  Add reinit of static variables.
  *
  * @note Based on GCOV-related code of the Linux kernel,
  * as described online by Thanassis Tsiodras (April 2016)
@@ -177,6 +178,26 @@ void __gcov_init(struct gcov_info *info)
 
 void __gcov_call_constructors(void) {
     void **ctor;
+
+    /* Reinitialize static variables.
+     * In case of unusual situations, where your code re-executes
+     * this function without your code actually restarting,
+     * so that static variables would otherwise
+     * be left as is, not reinitialized.
+     *
+     * This does not clear line counters that might also
+     * remain in such a situation, call __gcov_clear() if
+     * you need to clear the counters.
+     *
+     * If not actually restarting, and if using malloc,
+     * and if you do not call __gcov_exit between calls
+     * to this function to free the memory,
+     * you will have memory leaks.
+     */
+    gcov_headGcov = NULL;
+#ifndef GCOV_OPT_USE_MALLOC
+    gcov_GcovIndex = 0;
+#endif
 
     ctor = &__ctor_list;
     while (ctor != &__ctor_end) {
