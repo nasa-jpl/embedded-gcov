@@ -17,10 +17,10 @@ Embedded gcov: Insert in your code
                                         break;
 …
 ```
-Add the embedded gcov source files gcov\_public.c and gcov\_gcc.c to your build.
+Add the embedded gcov source files `gcov_public.c` and `gcov_gcc.c` to your build.
 
 You likely want a separate gcov build target, with preprocessor flags.
 
-May need a separate linker file for gnu ld, defining symbols for \_\_gcov\_call\_constructors().
+May need a separate linker file for gnu `ld`, defining symbols for `__gcov_call_constructors()`.
 
-Then compile with gcc and usual coverage flags -ftest-coverage -fprofile-arcs 
+Then compile with gcc and usual coverage flags `-ftest-coverage -fprofile-arcs `
