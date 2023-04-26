@@ -308,7 +308,7 @@ void __gcov_exit(void)
         (void)GCOV_WRITE_BYTE(file, bf);
         bf = (unsigned char)(bytesNeeded / 65536);
         (void)GCOV_WRITE_BYTE(file, bf);
-        bf = (unsigned char)(bytesNeeded / 255);
+        bf = (unsigned char)(bytesNeeded / 256);
         (void)GCOV_WRITE_BYTE(file, bf);
         bf = (unsigned char)(bytesNeeded);
         (void)GCOV_WRITE_BYTE(file, bf);
@@ -333,7 +333,7 @@ void __gcov_exit(void)
         /* we don't know endianness, so use division for consistent MSB first */
         gcov_output_buffer[gcov_output_index++] = (unsigned char)(bytesNeeded / 16777216);
         gcov_output_buffer[gcov_output_index++] = (unsigned char)(bytesNeeded / 65536);
-        gcov_output_buffer[gcov_output_index++] = (unsigned char)(bytesNeeded / 255);
+        gcov_output_buffer[gcov_output_index++] = (unsigned char)(bytesNeeded / 256);
         gcov_output_buffer[gcov_output_index++] = (unsigned char)(bytesNeeded);
 
         /* copy the data */
