@@ -58,6 +58,14 @@
 
 #include "gcov_public.h"
 
+
+/* version helper macro */
+#ifdef __GNUC__
+#define GCC_VERSION (__GNUC__ * 10000 \
+		     + __GNUC_MINOR__ * 100 \
+		     + __GNUC_PATCHLEVEL__)
+#endif
+
 /* Compare to gcc/gcov-counter.def and gcc/gcov-io.h */
 /* GCC has changed this back and forth over time, do not know exact GCC versions */
 /* This has been used with GCC 7.5.0 and GCC 11.1.0 */

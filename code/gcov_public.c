@@ -153,6 +153,43 @@ void __gcov_init(struct gcov_info *info)
 
 /* ----------------------------------------------------------- */
 #ifdef GCOV_OPT_PROVIDE_CALL_CONSTRUCTORS
+
+#if defined(__sparc__) && defined(GCC_VERSION) && (GCC_VERSION == 100200)
+
+/**
+ * see non-BCC2 variant for general explanation
+ *
+ * Gaisler's BCC2 (gcc 10.2.0) cannot be motivated to fill a .ctor
+ * section; instead it packs the constructor addresses between
+ * the symbols below; the first 32-bit word indicates the total number of
+ * entires, including the number and the end marker (== -1)
+ */
+
+extern void *___CTOR_LIST__;
+extern void *___CTOR_END__;
+
+void __gcov_call_constructors(void)
+{
+	void **ctor;
+
+
+	ctor = &___CTOR_LIST__;
+
+	ctor++;
+
+	while ((long)(*ctor) != -1) {
+
+		void (*func)(void);
+
+		func = (void ( *)(void))(*(unsigned long *)ctor);
+
+		func();
+		ctor++;
+	}
+}
+
+
+#else	/* non-BCC2 */
 /*
  * Your code may need to call this function to execute the
  * contructors that call __gcov_init (even in plain C).
@@ -209,6 +246,7 @@ void __gcov_call_constructors(void) {
         ctor++;
     }
 }
+#endif // Gaisler BCC2 variant
 #endif // GCOV_OPT_PROVIDE_CALL_CONSTRUCTORS
 
 
